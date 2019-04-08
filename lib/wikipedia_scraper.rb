@@ -48,7 +48,7 @@ class WikipediaScraper
     links = page.links.each_with_object({}) do |link, o|
       key = link.text
       val = link.resolved_uri
-      encoded_val = val.encode(val)
+      encoded_val = URI.encode(val)
       o[key] = val
       link_to_page = Page.find_by(url: URI.parse(encoded_val) )
       if link_to_page
