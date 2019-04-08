@@ -47,21 +47,30 @@ class WikipediaScraper
 
     links = page.links.each_with_object({}) do |link, o|
       key = link.text
-      val = link.resolved_uri
-      encoded_val = URI.encode(val)
+
+      begin
+        val = link.resolved_uri
+      rescue URI::InvalidURIError
+        next
+      end
+      # next if  val.to_s =~ /\A#{URI::regexp(['#'])}\z/
+
+      encoded_val = URI.encode(val.to_s)
+      # next unless  encoded_val =~ /\A#{URI::regexp(['http', 'https'])}\z/
       o[key] = val
-      link_to_page = Page.find_by(url: URI.parse(encoded_val) )
+
+      link_to_page = Page.find_by(url: URI.parse(encoded_val).to_s )
       if link_to_page
         puts "Found link as page: " + link_to_page.title
+        link_to_page.update_title(val)
       else
-        link_to_page = Page.new(url: URI.parse(encoded_val), title: link.text )
+        link_to_page = Page.new(url: URI.parse(encoded_val).to_s, title: link.text )
       end
 
       if link_to_page.save
         puts "Saved the following link as page: " + link_to_page.url + " ... " + link_to_page.title
         outbound_link_record = PagesOutboundLink.find_by(page_id: page_record.id, outbound_link_id: link_to_page.id )
         if outbound_link_record
-          outbound_link_record.update_title(val)
           puts "....Outbound link was found "
         else
           outbound_link_record = PagesOutboundLink.new(page_id: page_record.id, outbound_link_id: link_to_page.id )
