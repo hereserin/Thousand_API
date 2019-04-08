@@ -39,6 +39,14 @@ class Page < ApplicationRecord
     return adj_mtx_row
   end
 
+  def update_title(new_title)
+    self.title = new_title
+    if self.save
+      puts "Title updated, file saved. "
+    end
+
+  end
+
   # ** old version **
   #
   # def create_own_row(all_pages)
