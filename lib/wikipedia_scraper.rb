@@ -24,7 +24,7 @@ class WikipediaScraper
     page_record = Page.find_by(url: page.canonical_uri.to_s )
     if page_record
       puts "Found page: " + page_record.title
-      page_record.title = page.title # update page title 
+      page_record.title = page.title # update page title
     else
       page_record = Page.new(url: page.canonical_uri, title: page.title )
     end
@@ -48,18 +48,20 @@ class WikipediaScraper
     links = page.links.each_with_object({}) do |link, o|
       key = link.text
       val = link.resolved_uri
+      encoded_val = val.encode(url)
       o[key] = val
-      link_to_page = Page.find_by(url: link.resolved_uri.to_s )
+      link_to_page = Page.find_by(url: URI.parse(encoded_val) )
       if link_to_page
         puts "Found link as page: " + link_to_page.title
       else
-        link_to_page = Page.new(url: link.resolved_uri, title: link.text )
+        link_to_page = Page.new(url: URI.parse(encoded_val), title: link.text )
       end
 
       if link_to_page.save
         puts "Saved the following link as page: " + link_to_page.url + " ... " + link_to_page.title
         outbound_link_record = PagesOutboundLink.find_by(page_id: page_record.id, outbound_link_id: link_to_page.id )
         if outbound_link_record
+          outbound_link_record.update_title(val)
           puts "....Outbound link was found "
         else
           outbound_link_record = PagesOutboundLink.new(page_id: page_record.id, outbound_link_id: link_to_page.id )
