@@ -53,7 +53,7 @@ class WikipediaScraper
       rescue URI::InvalidURIError
         next
       end
-      # next if  val.to_s =~ /\A#{URI::regexp(['#'])}\z/
+      next if  val.to_s =~ /\A#{URI::regexp(['#'])}\z/
 
       encoded_val = URI.encode(val.to_s)
       # next unless  encoded_val =~ /\A#{URI::regexp(['http', 'https'])}\z/
