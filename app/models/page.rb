@@ -79,7 +79,7 @@ class Page < ApplicationRecord
     JobListing
     .includes(:paragraphs)
     .where("lower(title) LIKE ?",
-    "%#{query_array[0].downcase}%")
+    "%#{query_array[-1].downcase}%")
       .or(JobListing.search_titles(query_array[0..-2]))
   end
 
