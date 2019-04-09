@@ -67,7 +67,20 @@ class Page < ApplicationRecord
   #   return adj_mtx_row
   # end
 
+  def search_titles(query)
+    
+    if query_array.length == 1
+      return Page
+        .includes(:paragraphs)
+        .where("lower(title) LIKE ?",
+        "%#{query_array[0].downcase}%")
+    end
 
-
+    JobListing
+    .includes(:paragraphs)
+    .where("lower(title) LIKE ?",
+    "%#{query_array[0].downcase}%")
+      .or(JobListing.search_titles(query_array[0..-2]))
+  end
 
 end
