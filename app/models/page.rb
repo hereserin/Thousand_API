@@ -67,8 +67,8 @@ class Page < ApplicationRecord
   #   return adj_mtx_row
   # end
 
-  def search_titles(query)
-    
+  def search_titles(query_array)
+
     if query_array.length == 1
       return Page
         .includes(:paragraphs)
