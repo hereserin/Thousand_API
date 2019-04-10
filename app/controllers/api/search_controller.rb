@@ -7,6 +7,7 @@ class Api::SearchController < ApplicationController
       p params[:query]
       p query_to_array(params[:query])
       @pages = Page.search_titles(query_to_array(params[:query])).limit(10)
+      Page.generate_excerpts_for_group(@pages)
     end
 
     render 'api/pages/index'

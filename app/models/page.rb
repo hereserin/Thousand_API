@@ -71,6 +71,17 @@ class Page < ApplicationRecord
     @display_excerpt
   end
 
+  def self.generate_excerpts_for_group(pages_arr)
+    pages_arr.each do |page|
+      excerpt = ""
+      page.paragraphs.each do |paragraph|
+        break if excerpt.length > 300
+        excerpt += paragraph.content
+      end
+      page.assign_display_excerpt(excerpt)
+    end
+  end
+
 end
 
 
