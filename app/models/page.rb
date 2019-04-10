@@ -50,16 +50,25 @@ class Page < ApplicationRecord
   def self.search_titles(query_array)
     if query_array.length == 1
       return Page
+        .includes(:paragraphs)
         .where("lower(title) LIKE ?",
         "%#{query_array[0].downcase}%")
-        .includes(:paragraphs)
     end
 
     Page
+    .includes(:paragraphs)
     .where("lower(title) LIKE ?",
     "%#{query_array[-1].downcase}%")
-    .includes(:paragraphs)
       .or(Page.search_titles(query_array[0..-2]))
+  end
+
+  def assign_display_excerpt(str)
+    @display_excerpt = str
+  end
+
+  def display_excerpt
+    @display_excerpt ||= "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+    @display_excerpt
   end
 
 end
