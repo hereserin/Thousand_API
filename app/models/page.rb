@@ -73,12 +73,13 @@ class Page < ApplicationRecord
 
   def self.generate_excerpts_for_group(pages_arr)
     pages_arr.each do |page|
-      excerpt = ""
-      page.paragraphs.each do |paragraph|
-        break if excerpt.length > 300
-        excerpt += paragraph.content
-      end
-      page.assign_display_excerpt(excerpt)
+      page.assign_display_excerpt("Fourscore and seven years ago our fathers brought forth, on this continent, a new nation, conceived in liberty, and dedicated to the proposition that all men are created equal. Now we are engaged in a great civil war, testing whether that nation, or any nation so conceived, and so dedicated, can long endure. We are met on a great battle-field of that war. ")
+      # excerpt = ""
+      # page.paragraphs.each do |paragraph|
+      #   break if excerpt.length > 300
+      #   excerpt += paragraph.content
+      # end
+      # page.assign_display_excerpt(excerpt)
     end
   end
 
