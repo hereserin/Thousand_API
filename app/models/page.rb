@@ -47,6 +47,24 @@ class Page < ApplicationRecord
 
   end
 
+  def self.search_titles(query_array)
+    if query_array.length == 1
+      return Page
+        .where("lower(title) LIKE ?",
+        "%#{query_array[0].downcase}%")
+        .includes(:paragraphs)
+    end
+
+    Page
+    .where("lower(title) LIKE ?",
+    "%#{query_array[-1].downcase}%")
+    .includes(:paragraphs)
+      .or(Page.search_titles(query_array[0..-2]))
+  end
+
+end
+
+
   # ** old version **
   #
   # def create_own_row(all_pages)
@@ -66,21 +84,3 @@ class Page < ApplicationRecord
   #
   #   return adj_mtx_row
   # end
-
-  def search_titles(query_array)
-
-    if query_array.length == 1
-      return Page
-        .includes(:paragraphs)
-        .where("lower(title) LIKE ?",
-        "%#{query_array[0].downcase}%")
-    end
-
-    JobListing
-    .includes(:paragraphs)
-    .where("lower(title) LIKE ?",
-    "%#{query_array[-1].downcase}%")
-      .or(JobListing.search_titles(query_array[0..-2]))
-  end
-
-end

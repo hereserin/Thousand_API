@@ -4,7 +4,9 @@ class Api::SearchController < ApplicationController
     if params[:query].empty?
       @pages = Page.order(page_rank: :desc).limit(10)
     else
-      @pages = Page.search_titles(query_to_array(params[:query]))
+      p params[:query]
+      p query_to_array(params[:query])
+      @pages = Page.search_titles(query_to_array(params[:query])).limit(10)
     end
 
     render 'api/pages/index'
