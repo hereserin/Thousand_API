@@ -1,24 +1,17 @@
-# README
+# Thousand
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+Thousand is a mini-search engine.
 
-Things you may want to cover:
+## Existing Features:
 
-* Ruby version
+• Creates custom Rails tasks to scrape and index webpages, starting at a particular url
+• Scrapes information from websites using the Mechanize library in Ruby
+• Implements the PageRank algorithm in Ruby to determine the probability a page would be landed on given the set of total pages in the database
+• Creates an adjacency matrix representing the direction of inbound and outbound links within the collected set
+• Calculates matrix operations via custom methods
 
-* System dependencies
+### ToDos:
 
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+• User can query existing index, and receive search results in order of highest page rank
+• Scraper checks to see if record of a webpage already exists in database
+• Scrapes X most popular news websites )
