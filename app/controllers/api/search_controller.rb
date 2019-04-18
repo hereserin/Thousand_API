@@ -6,7 +6,7 @@ class Api::SearchController < ApplicationController
     else
       p params[:query]
       p query_to_array(params[:query])
-      @pages = Page.search_titles(query_to_array(params[:query])).limit(10)
+      @pages = Page.search_titles(query_to_array(params[:query]))
       Page.generate_excerpts_for_group(@pages)
     end
 

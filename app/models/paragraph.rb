@@ -1,3 +1,7 @@
 class Paragraph < ApplicationRecord
-  belongs_to :page 
+  # attr_reader :content 
+  belongs_to :page
+
+
+
 end

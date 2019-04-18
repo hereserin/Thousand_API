@@ -34,15 +34,29 @@ class WikipediaScraper
     else
       puts "** Did NOT save the following page: " + page_record.url
     end
+    # debugger
+    # text = page.content.strip
 
-    paragraphs = page.search("p").each_with_object([]) do |paragraph, arr|
-      paragraph_record = Paragraph.new( page_id: page_record.id, content: paragraph )
+    paragraphs = page.search('p').each_with_object([]) do |paragraph, arr|
+    # paragraphs = page.search('p','div','a','table','ul') do |paragraph|
+    # paragraphs = page.search('p') do |paragraph|
+
+
+      # next if paragraph.content.strip.length <= 0
+      paragraph_record = Paragraph.new( page_id: page_record.id, content: paragraph.content.strip )
+
       if paragraph_record.save
         puts "Saved a paragraph with the following id: " + paragraph_record.id.to_s
       else
         puts "** paragraph did not persist **"
+        debugger
       end
+
       arr << paragraph.text
+    end
+    if paragraphs.length < 1
+      puts "help."
+      debugger
     end
 
     links = page.links.each_with_object({}) do |link, o|
@@ -68,6 +82,8 @@ class WikipediaScraper
       end
 
       if link_to_page.save
+        link_to_page.get_contents
+        
         puts "Saved the following link as page: " + link_to_page.url + " ... " + link_to_page.title
         outbound_link_record = PagesOutboundLink.find_by(page_id: page_record.id, outbound_link_id: link_to_page.id )
         if outbound_link_record

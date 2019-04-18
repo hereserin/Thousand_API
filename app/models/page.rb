@@ -71,15 +71,51 @@ class Page < ApplicationRecord
     @display_excerpt
   end
 
+  def get_contents
+    contents = self.paragraphs
+    return contents if contents.length > 0
+    action = :pending
+    action = self.record_paragraphs
+    until action == :complete
+      sleep 0.01
+    end
+    self.paragraphs
+  end
+
+  def record_paragraphs
+    paragraph_agent = Mechanize.new
+    paragraph_count = 0
+    begin
+      page = paragraph_agent.get(self.url)
+      page.search('p').each do |paragraph|
+        break if paragraph_count > 20
+        next if paragraph.content.strip.length < 15
+        paragraph_record = Paragraph.new( page_id: self.id, content: paragraph.content.strip )
+
+        if paragraph_record.save
+          puts "Saved a paragraph with the following id: " + paragraph_record.id.to_s
+        else
+          puts "** paragraph did not persist **"
+          debugger
+        end
+        paragraph_count += 1
+      end
+    rescue Mechanize::ResponseCodeError => e
+      p e.class
+    rescue SocketError => e
+      p e.class
+    end
+    return :complete
+  end
+
   def self.generate_excerpts_for_group(pages_arr)
     pages_arr.each do |page|
-      # page.assign_display_excerpt("Fourscore and seven years ago our fathers brought forth, on this continent, a new nation, conceived in liberty, and dedicated to the proposition that all men are created equal. Now we are engaged in a great civil war, testing whether that nation, or any nation so conceived, and so dedicated, can long endure. We are met on a great battle-field of that war. ")
       excerpt = ""
-      page.paragraphs.each do |paragraph|
+      contents = page.get_contents
+      contents.each do |paragraph|
         break if excerpt.length > 200
-        excerpt += "::XxX::"
-        excerpt += paragraph.id.to_s
         excerpt += paragraph.content
+        excerpt += " "
       end
       page.assign_display_excerpt(excerpt)
     end

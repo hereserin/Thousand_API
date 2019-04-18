@@ -7,6 +7,7 @@ namespace :db do
     task :scrape_wikipedia => :environment do
       Page.delete_all
       Paragraph.delete_all
+      PagesOutboundLink.delete_all
 
       File.open("scrape_results.txt", "w+") do |page|
         spider = WikipediaScraper.new
