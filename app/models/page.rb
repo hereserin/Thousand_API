@@ -8,7 +8,7 @@ class Page < ApplicationRecord
 
   has_many :inbound_links,
     through: :pages_inbound_links,
-    source: :outbound_link
+    source: :page
 
 
   has_many :pages_outbound_links,
@@ -18,7 +18,7 @@ class Page < ApplicationRecord
 
   has_many :outbound_links,
     through: :pages_outbound_links,
-    source: :page
+    source: :outbound_link
 
   def total_outbound_links
     @total_outbound_links ||= self.outbound_links.count
@@ -103,6 +103,7 @@ class Page < ApplicationRecord
     rescue Mechanize::ResponseCodeError => e
       p e.class
     rescue SocketError => e
+      debugger
       p e.class
     end
     return :complete

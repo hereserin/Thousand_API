@@ -1,8 +1,8 @@
 class Api::PagesController < ApplicationController
   def index
-    # @pages = Page.includes(:paragraphs).order(page_rank: :desc)
-    @pages = Page.includes(:paragraphs).limit(50)
-     
+    @pages = Page.includes(:paragraphs).includes(:outbound_links).includes(:inbound_links).order(page_rank: :desc).limit(50)
+    # @pages = Page.includes(:paragraphs).limit(50)
+
     Page.generate_excerpts_for_group(@pages)
 
     # @pages = Page.joins(:paragraphs).limit(10)

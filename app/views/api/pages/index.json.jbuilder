@@ -2,8 +2,10 @@ json.pages do
   @pages.each do |page|
     json.set! page.id do
       json.extract! page, :title, :url, :page_rank
-      # json.paragraphs page.paragraphs.pluck(:id)
       # json.outbound_links page.outbound_links.pluck(:id)
+      # json.paragraphs page.paragraphs.pluck(:id)
+      json.outbound_links page.outbound_links.pluck(:id)
+      json.inbound_links page.inbound_links.pluck(:id)
       json.excerpt page.display_excerpt
     end
   end
