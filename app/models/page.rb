@@ -114,7 +114,7 @@ class Page < ApplicationRecord
     rescue Exception => e
       p e.class
       File.open("error_log.txt", "w+") do |f|
-        f.puts Time.now.to_str
+        f.puts Time.now.iso8601
         f.puts ": "
         f.puts self.url.to_s
         f.puts e.class
