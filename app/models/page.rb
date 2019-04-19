@@ -83,10 +83,13 @@ class Page < ApplicationRecord
   end
 
   def record_paragraphs
-    paragraph_agent = Mechanize.new
-    paragraph_count = 0
     begin
+      paragraph_agent = Mechanize.new
+      paragraph_count = 0
+      return :complete if self.url.strip[-4..-1] == ".asp"
       page = paragraph_agent.get(self.url)
+      p page.class
+
       return :complete unless page.class == Mechanize::Page
 
       page.search('p').each do |paragraph|
@@ -106,6 +109,17 @@ class Page < ApplicationRecord
       p e.class
     rescue SocketError => e
       p e.class
+    rescue Net::OpenTimeout => e
+      p e.class
+    rescue Exception => e
+      p e.class
+      File.open("error_log.txt", "w+") do |f|
+        f.puts Time.now.to_str
+        f.puts ": "
+        f.puts self.url.to_s
+        f.puts e.class
+        f.puts "-----------------"
+      end
     end
     return :complete
   end
