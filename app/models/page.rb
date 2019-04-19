@@ -87,6 +87,8 @@ class Page < ApplicationRecord
     paragraph_count = 0
     begin
       page = paragraph_agent.get(self.url)
+      return :complete unless page.class == Mechanize::Page
+
       page.search('p').each do |paragraph|
         break if paragraph_count > 20
         next if paragraph.content.strip.length < 15
@@ -103,7 +105,6 @@ class Page < ApplicationRecord
     rescue Mechanize::ResponseCodeError => e
       p e.class
     rescue SocketError => e
-      debugger
       p e.class
     end
     return :complete
@@ -114,7 +115,7 @@ class Page < ApplicationRecord
       excerpt = ""
       contents = page.get_contents
       contents.each do |paragraph|
-        break if excerpt.length > 200
+        break if excerpt.length > 150
         excerpt += paragraph.content
         excerpt += " "
       end
